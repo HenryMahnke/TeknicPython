@@ -56,7 +56,7 @@ Typical usage
     mgr.shutdown()
 )doc";
 
-    py::class_<MotorManager>(m, "MotorManager",
+    py::class_<MotorManager>(m, "MotorManager",py::call_guard<py::gil_scoped_release>(),
         R"doc(
 Controls one or more Teknic ClearPath-SC motors connected through an SC Hub.
 
@@ -70,7 +70,7 @@ unless documented otherwise.
         // ------------------------------------------------------------------
         // Lifecycle
         // ------------------------------------------------------------------
-        .def("initialize", &MotorManager::inititalize,
+        .def("initialize", &MotorManager::inititalize,py::call_guard<py::gil_scoped_release>(),
              R"doc(
 Create the internal SysManager instance.
 
@@ -82,7 +82,7 @@ int
     0 on success, -1 on failure.
 )doc")
 
-        .def("find_and_open_ports", &MotorManager::findAndOpenPorts,
+        .def("find_and_open_ports", &MotorManager::findAndOpenPorts,py::call_guard<py::gil_scoped_release>(),
              R"doc(
 Scan for SC Hub COM ports and open the first one found.
 
@@ -94,7 +94,7 @@ int
     0 on success, -1 if no hub is found or the port cannot be opened.
 )doc")
 
-        .def("enable_motors", &MotorManager::enableMotors,
+        .def("enable_motors", &MotorManager::enableMotors,py::call_guard<py::gil_scoped_release>(),
              R"doc(
 Send an enable request to every node on the open port and wait up to 3 s for
 them to become motion-ready.
@@ -105,7 +105,7 @@ int
     0 on success, -1 on timeout or error.
 )doc")
 
-        .def("disable_motors", &MotorManager::disableMotors,
+        .def("disable_motors", &MotorManager::disableMotors,py::call_guard<py::gil_scoped_release>(),
              R"doc(
 Send a disable request to every node on the open port.
 
@@ -115,7 +115,7 @@ int
     0 on success, -1 on error.
 )doc")
 
-        .def("home_motors", &MotorManager::homeMotors,
+        .def("home_motors", &MotorManager::homeMotors,py::call_guard<py::gil_scoped_release>(),
              R"doc(
 Initiate the homing sequence for every node that has a valid homing
 configuration (set up in Teknic ClearView) and block until complete.
@@ -143,7 +143,7 @@ int
         // ------------------------------------------------------------------
         // Motion
         // ------------------------------------------------------------------
-        .def("set_setpoint", &MotorManager::setSetpoint,
+        .def("set_setpoint", &MotorManager::setSetpoint,py::call_guard<py::gil_scoped_release>(),
              py::arg("motor_idx"), py::arg("setpoint"),
              R"doc(
 Store a desired absolute position (in encoder counts) for one motor.
@@ -163,7 +163,7 @@ int
     0 on success, -1 on invalid index.
 )doc")
 
-        .def("go_to_setpoint", &MotorManager::goToSetpoint,
+        .def("go_to_setpoint", &MotorManager::goToSetpoint,py::call_guard<py::gil_scoped_release>(),
              R"doc(
 Command both motors to move to their stored setpoints simultaneously.
 
@@ -176,7 +176,7 @@ int
     0 on success, -1 on error.
 )doc")
 
-        .def("at_setpoint", &MotorManager::atSetpoint,
+        .def("at_setpoint", &MotorManager::atSetpoint,py::call_guard<py::gil_scoped_release>(),
              R"doc(
 Check whether all active motors have reached their target positions.
 
@@ -186,7 +186,7 @@ int
     1 if all motors are at their targets, 0 if still moving, -1 on error.
 )doc")
 
-        .def("get_position", &MotorManager::getPosition,
+        .def("get_position", &MotorManager::getPosition,py::call_guard<py::gil_scoped_release>(),
              py::arg("motor_idx"),
              R"doc(
 Return the current measured position (encoder counts) of one motor.
@@ -206,7 +206,7 @@ float
         // Configuration
         // ------------------------------------------------------------------
         .def("set_motor_limits",
-             &MotorManager::setMotorLimits,
+             &MotorManager::setMotorLimits,py::call_guard<py::gil_scoped_release>(),
              py::arg("acc_rpm_per_sec") = 1000.0,
              py::arg("vel_rpm") = 100.0,
              R"doc(
@@ -228,7 +228,7 @@ int
         // ------------------------------------------------------------------
         // Status / info
         // ------------------------------------------------------------------
-        .def("is_ready", &MotorManager::isReady,
+        .def("is_ready", &MotorManager::isReady,py::call_guard<py::gil_scoped_release>(),
              R"doc(
 Check whether all nodes are motion-ready.
 
@@ -238,7 +238,7 @@ int
     1 if all nodes are ready, 0 if not, -1 on error.
 )doc")
 
-        .def("get_node_count", &MotorManager::getNodeCount,
+        .def("get_node_count", &MotorManager::getNodeCount,py::call_guard<py::gil_scoped_release>(),
              R"doc(
 Return the number of nodes found on the open port.
 
@@ -248,6 +248,6 @@ int
     Node count, or 0 if no port is open.
 )doc")
 
-        .def("test_hello", &MotorManager::testHello,
+        .def("test_hello", &MotorManager::testHello, py::call_guard<py::gil_scoped_release>(),
              "Print a brief status summary to stdout (useful for smoke-testing).");
 }
