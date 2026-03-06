@@ -1,0 +1,10 @@
+^C:\USERS\HENRY\ONEDRIVE\DOCUMENTS\ARDC_LAB\TEKNICPYTHON\BUILD\_DEPS\PYBIND11-SUBBUILD\CMAKEFILES\D2B1144A92B1064168E64145DA7B8D34\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/henry/OneDrive/Documents/ARDC_Lab/TeknicPython/build/_deps/pybind11-subbuild -BC:/Users/henry/OneDrive/Documents/ARDC_Lab/TeknicPython/build/_deps/pybind11-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/henry/OneDrive/Documents/ARDC_Lab/TeknicPython/build/_deps/pybind11-subbuild/pybind11-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

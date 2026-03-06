@@ -1,0 +1,10 @@
+^C:\USERS\HENRY\ONEDRIVE\DOCUMENTS\ARDC_LAB\TEKNICPYTHON\BUILD\CMAKEFILES\C7B8CBACD6444E9D5446199F0C7E80B4\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/henry/OneDrive/Documents/ARDC_Lab/TeknicPython -BC:/Users/henry/OneDrive/Documents/ARDC_Lab/TeknicPython/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/henry/OneDrive/Documents/ARDC_Lab/TeknicPython/build/teknic_motors.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

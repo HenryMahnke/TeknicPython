@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\henry\OneDrive\Documents\ARDC_Lab\TeknicPython\build\CMakeFiles\c7b8cbacd6444e9d5446199f0c7e80b4\INSTALL_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{F96CC146-E51F-3E8D-9D84-1FEE5107310A}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

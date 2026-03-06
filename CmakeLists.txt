@@ -1,0 +1,84 @@
+cmake_minimum_required(VERSION 3.15)
+project(teknic_motors CXX)
+
+# ---------------------------------------------------------------------------
+# C++ standard
+# ---------------------------------------------------------------------------
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# ---------------------------------------------------------------------------
+# Compiler selection (prefer clang if available, fall back to system default)
+# ---------------------------------------------------------------------------
+find_program(CLANG_C   NAMES clang-18 clang)
+find_program(CLANG_CXX NAMES clang++-18 clang++)
+if(CLANG_C AND CLANG_CXX)
+    set(CMAKE_C_COMPILER   ${CLANG_C})
+    set(CMAKE_CXX_COMPILER ${CLANG_CXX})
+endif()
+
+# ---------------------------------------------------------------------------
+# sFoundation include / library paths
+#   The SDK is expected at  <project-root>/sdk/
+#   Adjust the paths below if your SDK lives elsewhere.
+# ---------------------------------------------------------------------------
+set(SFND_INC_DIR  "${CMAKE_SOURCE_DIR}/sdk/inc")
+set(SFND_LIB_DIR  "${CMAKE_SOURCE_DIR}/sdk/lib/win/Release/x64")
+set(SFND_LIB      "${SFND_LIB_DIR}/sFoundation20.lib")
+
+if(NOT EXISTS "${SFND_INC_DIR}")
+    message(WARNING
+        "sFoundation include dir not found at '${SFND_INC_DIR}'. "
+        "Set SFND_INC_DIR manually or unpack the SDK there before building.")
+endif()
+
+# Common include dirs shared by all targets
+set(PROJECT_INCLUDES
+    ${CMAKE_SOURCE_DIR}/includes
+    ${SFND_INC_DIR}
+)
+
+# ---------------------------------------------------------------------------
+# Shared object for the MotorManager implementation
+#   Building as a static lib makes it easy to link from both the test
+#   executable and the pybind11 extension without recompiling.
+# ---------------------------------------------------------------------------
+add_library(motor_manager STATIC
+    src/MotorManager.cpp
+)
+target_include_directories(motor_manager PUBLIC ${PROJECT_INCLUDES})
+target_link_directories(motor_manager PUBLIC "${SFND_LIB_DIR}")
+target_link_libraries(motor_manager
+    PUBLIC
+        "${SFND_LIB}"
+        $<$<NOT:$<PLATFORM_ID:Windows>>:pthread>
+)
+
+# ---------------------------------------------------------------------------
+# C++ test executable
+# ---------------------------------------------------------------------------
+add_executable(teknic_motors src/main.cpp)
+target_include_directories(teknic_motors PRIVATE ${PROJECT_INCLUDES})
+target_link_libraries(teknic_motors PRIVATE motor_manager)
+
+# ---------------------------------------------------------------------------
+# pybind11 Python extension
+# ---------------------------------------------------------------------------
+include(FetchContent)
+
+FetchContent_Declare(
+    pybind11
+    GIT_REPOSITORY https://github.com/pybind/pybind11.git
+)
+FetchContent_MakeAvailable(pybind11)
+
+pybind11_add_module(TeknicMotors src/bindings.cpp)
+target_include_directories(TeknicMotors PRIVATE ${PROJECT_INCLUDES})
+target_link_libraries(TeknicMotors PRIVATE motor_manager)
+
+# ---------------------------------------------------------------------------
+# Install rules (optional) – copy the .so next to the project root
+# ---------------------------------------------------------------------------
+install(TARGETS TeknicMotors
+    LIBRARY DESTINATION ${CMAKE_SOURCE_DIR}
+)
