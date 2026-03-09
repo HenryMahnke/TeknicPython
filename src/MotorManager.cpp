@@ -303,7 +303,7 @@ double MotorManager::getPosition(int motorIdx) {
 // setMotorLimits
 //   Applies acceleration and velocity limits to every node on the port.
 // ---------------------------------------------------------------------------
-int MotorManager::setMotorLimits(double accLimRpmPerSec, double velLimRpm) {
+int MotorManager::setMotorLimits(double accLimRpmPerSec, double velLimRpm, double softLimit1, double softLimit2) {
     if (!myPort) {
         std::cerr << "[MotorManager] No port open.\n";
         return -1;
@@ -313,9 +313,11 @@ int MotorManager::setMotorLimits(double accLimRpmPerSec, double velLimRpm) {
             INode &node = myPort->Nodes(i);
             node.Motion.AccLimit = accLimRpmPerSec;
             node.Motion.VelLimit = velLimRpm;
+            node.Limits.SoftLimit1 = softLimit1; 
+            node.Limits.SoftLimit2 = softLimit2;
             std::cout << "[MotorManager] Node " << i
                       << " limits set: acc=" << accLimRpmPerSec
-                      << " RPM/s, vel=" << velLimRpm << " RPM.\n";
+                      << " RPM/s, vel=" << velLimRpm << " RPM " << " softLimit1=" << softLimit1 << " softLimit2=" << softLimit2 << ".";
         }
     } catch (mnErr &e) {
         std::cerr << "[MotorManager] setMotorLimits error: " << e.ErrorMsg << "\n";

@@ -17,7 +17,7 @@ class MotorManager{
         int goToSetpoint(); 
         int atSetpoint(); 
         double getPosition(int motorIdx); 
-        int setMotorLimits(double accLimRpmPerSec = 1000, double velLimRpm = 100);
+        int setMotorLimits(double accLimRpmPerSec = 1000, double velLimRpm = 100, double softLimit1 = 0, double softLimit2 = 0);
         int isReady(); 
         int getNodeCount(); 
         int shutdown();

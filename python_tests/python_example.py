@@ -13,7 +13,7 @@ async def setup_motors():
         print("Failed to find and open ports")
         exit(1)
 
-    if (mgr.set_motor_limits(acc_rpm_per_sec=500.0, vel_rpm=200.0) != 0):
+    if (mgr.set_motor_limits(acc_rpm_per_sec=500.0, vel_rpm=500.0) != 0):
         print("Failed to set motor limits")
         exit(1)
 async def enable_motors():
@@ -53,14 +53,14 @@ async def shutdown():
 
 async def main():
     print("STARTING TEST")
-    await asyncio.sleep(4)
+    await asyncio.sleep(3)
     await setup_motors()
     print("setup motors was successful")
-    await asyncio.sleep(4)
+    await asyncio.sleep(3)
     await enable_motors()
-    await set_setpoint(motor_idx=0, setpoint=20000.0)
+    await set_setpoint(motor_idx=0, setpoint=500000.0)
     print("about to go to setpoint")
-    await asyncio.sleep(10)
+    await asyncio.sleep(3)
     await go_to_setpoint()
     await at_setpoint()
     position = await get_position(motor_idx=0)

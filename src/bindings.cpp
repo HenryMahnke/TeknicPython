@@ -209,6 +209,8 @@ float
              &MotorManager::setMotorLimits,py::call_guard<py::gil_scoped_release>(),
              py::arg("acc_rpm_per_sec") = 1000.0,
              py::arg("vel_rpm") = 100.0,
+             py::arg("soft_limit_1") = 0.0,
+             py::arg("soft_limit_2") = 0.0,
              R"doc(
 Set acceleration and velocity limits on every node.
 
@@ -218,6 +220,10 @@ acc_rpm_per_sec : float
     Acceleration limit in RPM/s (default 1000).
 vel_rpm : float
     Velocity limit in RPM (default 100).
+soft_limit_1 : float
+    Soft limit 1 in encoder counts (default 0).
+soft_limit_2 : float
+    Soft limit 2 in encoder counts (default 0).
 
 Returns
 -------

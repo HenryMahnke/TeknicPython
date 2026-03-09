@@ -1,10 +1,23 @@
-This project is a simple lightweight python wrapper for Teknic Clearpath SC motors 
+This project is a lightweight Python wrapper for Teknic ClearPath SC motors.
 
-This project was to run on windows, and to adapt to Linux, it should be quite straightforward. The differences will be noted at the bottom of the readme 
+It currently targets Windows. Adapting it to Linux should be fairly straightforward once the SDK and library paths are updated.
 
-when we make the python wrapper, we can then:
-set "PYTHONPATH=<CURDIRECTORY>" && uv run pybind11-stubgen TeknicMotors
+## Development workflow
 
-to generate the stubs from the .pyd file
+This project uses `uv` together with `scikit-build-core`, so the pybind11 extension is built and installed into the virtual environment instead of being copied into the source tree.
 
-then do note that to get method hints you will have to create a pyright config.json file that specifies python version, as well as extraPaths and stubPath
+Create the environment and build the package with:
+
+`uv venv`
+
+`uv sync`
+
+That is enough to build and install `TeknicMotors` into `.venv`, along with the generated `TeknicMotors.pyi` stub and the required `sFoundation20.dll`.
+
+You can then run Python against the installed package with:
+
+`uv run python -c "import TeknicMotors; print(TeknicMotors)"`
+
+or run the sample script with:
+
+`uv run python python_tests/python_example.py`

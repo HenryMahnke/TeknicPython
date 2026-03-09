@@ -1,5 +1,3 @@
 {
-    "pythonVersion": "3.12",
-    "extraPaths": ["python_tests"],
-    "stubPath": "python_tests/stubs"
+    "pythonVersion": "3.13"
 }

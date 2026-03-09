@@ -1,6 +1,6 @@
 version = 1
 revision = 3
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 
 [[package]]
 name = "pybind11-stubgen"
@@ -12,9 +12,9 @@ wheels = [
 ]
 
 [[package]]
-name = "teknicpython"
+name = "teknicmotors"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [

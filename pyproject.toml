@@ -1,10 +1,22 @@
+[build-system]
+requires = [
+    "scikit-build-core>=0.10",
+    "pybind11>=2.12",
+    "pybind11-stubgen>=2.5.5",
+]
+build-backend = "scikit_build_core.build"
+
 [project]
-name = "teknicpython"
+name = "TeknicMotors"
 version = "0.1.0"
-description = "Add your description here"
+description = "Python bindings for Teknic ClearPath SC motors"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = []
+
+[tool.scikit-build]
+cmake.build-type = "Release"
+wheel.packages = []
 
 [dependency-groups]
 dev = [

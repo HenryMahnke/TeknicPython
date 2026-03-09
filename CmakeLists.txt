@@ -63,22 +63,48 @@ target_link_libraries(teknic_motors PRIVATE motor_manager)
 
 # ---------------------------------------------------------------------------
 # pybind11 Python extension
+#   scikit-build-core provisions build requirements into an isolated Python
+#   environment, so we can discover both Python and pybind11 via find_package.
 # ---------------------------------------------------------------------------
-include(FetchContent)
-
-FetchContent_Declare(
-    pybind11
-    GIT_REPOSITORY https://github.com/pybind/pybind11.git
-)
-FetchContent_MakeAvailable(pybind11)
+find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
 
 pybind11_add_module(TeknicMotors src/bindings.cpp)
 target_include_directories(TeknicMotors PRIVATE ${PROJECT_INCLUDES})
 target_link_libraries(TeknicMotors PRIVATE motor_manager)
 
+
 # ---------------------------------------------------------------------------
-# Install rules (optional) – copy the .so next to the project root
+# Install rules
+#   Install into the wheel / active environment rather than copying artifacts
+#   back into the source tree.
 # ---------------------------------------------------------------------------
 install(TARGETS TeknicMotors
-    LIBRARY DESTINATION ${CMAKE_SOURCE_DIR}
+    LIBRARY DESTINATION .
+    RUNTIME DESTINATION .
+)
+install(FILES
+    "${SFND_LIB_DIR}/sFoundation20.dll"
+    DESTINATION .
+)
+
+# Generate stubs next to the extension in the build tree, then install them
+# with the compiled module so editors can resolve the API from the venv.
+set(TEKNIC_STUB_DIR "${CMAKE_CURRENT_BINARY_DIR}/python_stubs")
+
+add_custom_command(TARGET TeknicMotors POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${SFND_LIB_DIR}/sFoundation20.dll"
+        "$<TARGET_FILE_DIR:TeknicMotors>"
+    COMMAND ${CMAKE_COMMAND} -E env
+        "PYTHONPATH=$<TARGET_FILE_DIR:TeknicMotors>"
+        "${Python_EXECUTABLE}" -m pybind11_stubgen TeknicMotors
+            --output-dir "${TEKNIC_STUB_DIR}"
+    COMMENT "Generating TeknicMotors.pyi stub..."
+    VERBATIM
+)
+
+install(FILES
+    "${TEKNIC_STUB_DIR}/TeknicMotors.pyi"
+    DESTINATION .
 )
