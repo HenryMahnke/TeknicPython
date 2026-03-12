@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.15)
-project(teknic_motors CXX)
 
 # ---------------------------------------------------------------------------
 # C++ standard
@@ -8,15 +7,32 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# ---------------------------------------------------------------------------
-# Compiler selection (prefer clang if available, fall back to system default)
-# ---------------------------------------------------------------------------
-find_program(CLANG_C   NAMES clang-18 clang)
-find_program(CLANG_CXX NAMES clang++-18 clang++)
-if(CLANG_C AND CLANG_CXX)
-    set(CMAKE_C_COMPILER   ${CLANG_C})
-    set(CMAKE_CXX_COMPILER ${CLANG_CXX})
+# Enable C++ exceptions (required for clang-cl / MSVC)
+if(MSVC OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND WIN32)
+    add_compile_options(/EHsc)
 endif()
+
+# ---------------------------------------------------------------------------
+# Compiler selection
+#   On Windows use clang-cl (MSVC-compatible Clang frontend) so the linker
+#   receives the correct flags.  On other platforms use plain clang/clang++.
+# ---------------------------------------------------------------------------
+if(WIN32)
+    find_program(CLANG_CL NAMES clang-cl)
+    if(CLANG_CL)
+        set(CMAKE_C_COMPILER   ${CLANG_CL})
+        set(CMAKE_CXX_COMPILER ${CLANG_CL})
+    endif()
+else()
+    find_program(CLANG_C   NAMES clang-18 clang)
+    find_program(CLANG_CXX NAMES clang++-18 clang++)
+    if(CLANG_C AND CLANG_CXX)
+        set(CMAKE_C_COMPILER   ${CLANG_C})
+        set(CMAKE_CXX_COMPILER ${CLANG_CXX})
+    endif()
+endif()
+
+project(teknic_motors CXX)
 
 # ---------------------------------------------------------------------------
 # sFoundation include / library paths
@@ -71,6 +87,7 @@ find_package(Python COMPONENTS Interpreter Development.Module REQUIRED)
 find_package(pybind11 CONFIG REQUIRED)
 
 pybind11_add_module(TeknicMotors src/bindings.cpp)
+
 target_include_directories(TeknicMotors PRIVATE ${PROJECT_INCLUDES})
 target_link_libraries(TeknicMotors PRIVATE motor_manager)
 

@@ -1,4 +1,4 @@
-serices: 
+services: 
   teknic_motors: 
    build: 
     context: .
