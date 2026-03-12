@@ -1,21 +1,4 @@
 // bindings.cpp – pybind11 module exposing the MotorManager C++ class to Python
-//
-// After building with CMake the resulting shared library can be imported as:
-//
-//   import TeknicMotors
-//   mgr = TeknicMotors.MotorManager()
-//   mgr.initialize()
-//   mgr.find_and_open_ports()
-//   mgr.set_motor_limits(500.0, 200.0)
-//   mgr.enable_motors()
-//   mgr.home_motors()
-//   mgr.set_setpoint(0, 2000.0)
-//   mgr.go_to_setpoint()
-//   while not mgr.at_setpoint():
-//       pass
-//   pos = mgr.get_position(0)
-//   mgr.shutdown()
-
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "TeknicMotors.hpp"

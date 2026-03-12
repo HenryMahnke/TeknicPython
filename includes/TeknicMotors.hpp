@@ -11,6 +11,7 @@ public:
   int findAndOpenPorts();
   int enableMotors();
   int disableMotors();
+  int homeMotor(int motorIdx);
   int homeMotors();
   int setSetpoint(int motorIdx, double setpoint);
 
