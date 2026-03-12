@@ -1,9 +1,7 @@
 CompileFlags:
   CompilationDatabase: build
-  Remove:
-    - -imsvc*
-  Add:
-    [
-      -imsvc.venv/Lib/site-packages/pybind11/include,
-      -imsvcC:/Users/henry/AppData/Roaming/uv/python/cpython-3.13.1-windows-x86_64-none/Include,
-    ]
+  Add: [
+    -imsvc../.venv/Lib/site-packages/pybind11/include
+  ]
+  # this file shows clangd where the includes are so that, 
+  # the adds are relative to the compile commands

@@ -1,15 +1,15 @@
-services: 
-  teknic_motors: 
-   build: 
-    context: .
-    dockerfile: Dockerfile
-  container_name: teknic_motors
-  volumes: 
-    - .:/workspace 
-  devices: 
-    - /dev/ttyUSB0:/dev/ttyUSB0
-  privileged: true 
-  stdin_open: true
-  tty: true
-  working_dir: /workspace
-  command: /bin/bash 
+services:
+  teknic_motors:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: teknic_motors
+    volumes:
+      - .:/workspace
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
+    privileged: true
+    stdin_open: true
+    tty: true
+    working_dir: /workspace
+    command: /bin/bash
