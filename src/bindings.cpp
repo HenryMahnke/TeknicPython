@@ -128,6 +128,26 @@ int
     0 on success, -1 if any axis times out.
 )doc")
 
+        .def("home_motor", &MotorManager::homeMotor, py::call_guard<py::gil_scoped_release>(),
+             py::arg("motor_idx"),
+             R"doc(
+Home a single motor identified by *motor_idx*.
+
+The motor must have a valid homing configuration set up in Teknic ClearView.
+Blocks until homing completes or a 30-second timeout expires.
+
+Parameters
+----------
+motor_idx : int
+    0-based index of the motor to home.
+
+Returns
+-------
+int
+    0 on success, -1 if homing is not configured, the index is invalid,
+    or the operation times out.
+)doc")
+
         .def("shutdown", &MotorManager::shutdown,
              R"doc(
 Disable all motors and close all open ports.
