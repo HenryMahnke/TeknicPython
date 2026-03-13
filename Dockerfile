@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     clangd \
     g++ \
     tar \
+    ninja-build \
     && rm -rf /var/lib/apt/lists/*
 
 

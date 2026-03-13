@@ -21,3 +21,24 @@ You can then run Python against the installed package with:
 or run the sample script with:
 
 `uv run python python_tests/python_example.py`
+
+
+
+when running in docker: 
+currently run 
+docker compose build 
+docker compose up 
+attach in vscode 
+once in container : TODO need to automate: 
+
+cd into linux_sdk/sFoundation/sFoundation 
+run make
+this will create libsFoundation20.so
+
+
+LD_LIBRARY_PATH=/workspace/.venv/lib/python3.13/site-packages uv run python python_tests/python_example.py
+
+right now builds with this really sus command from chatgpt, this tells it where to find the .so.1 library (do more research into this later)
+
+
+TODO figure out how to run the USB Driver

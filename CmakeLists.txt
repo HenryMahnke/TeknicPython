@@ -29,6 +29,7 @@ else()
     if(CLANG_C AND CLANG_CXX)
         set(CMAKE_C_COMPILER   ${CLANG_C})
         set(CMAKE_CXX_COMPILER ${CLANG_CXX})
+        MESSAGE("FOUND CLANG COMPILER")
     endif()
 endif()
 
@@ -39,9 +40,15 @@ project(teknic_motors CXX)
 #   The SDK is expected at  <project-root>/sdk/
 #   Adjust the paths below if your SDK lives elsewhere.
 # ---------------------------------------------------------------------------
+if(WIN32)
 set(SFND_INC_DIR  "${CMAKE_SOURCE_DIR}/sdk/inc")
 set(SFND_LIB_DIR  "${CMAKE_SOURCE_DIR}/sdk/lib/win/Release/x64")
 set(SFND_LIB      "${SFND_LIB_DIR}/sFoundation20.lib")
+else()
+set(SFND_INC_DIR  "${CMAKE_SOURCE_DIR}/linux_sdk/sFoundation/inc/inc-pub")
+set(SFND_LIB_DIR  "${CMAKE_SOURCE_DIR}/linux_sdk/sFoundation/sFoundation")
+set(SFND_LIB      "${SFND_LIB_DIR}/libsFoundation20.so")
+endif()
 
 if(NOT EXISTS "${SFND_INC_DIR}")
     message(WARNING
@@ -71,12 +78,6 @@ target_link_libraries(motor_manager
         $<$<NOT:$<PLATFORM_ID:Windows>>:pthread>
 )
 
-# ---------------------------------------------------------------------------
-# C++ test executable
-# ---------------------------------------------------------------------------
-add_executable(teknic_motors src/main.cpp)
-target_include_directories(teknic_motors PRIVATE ${PROJECT_INCLUDES})
-target_link_libraries(teknic_motors PRIVATE motor_manager)
 
 # ---------------------------------------------------------------------------
 # pybind11 Python extension
@@ -101,15 +102,31 @@ install(TARGETS TeknicMotors
     LIBRARY DESTINATION .
     RUNTIME DESTINATION .
 )
+if(WIN32)
 install(FILES
     "${SFND_LIB_DIR}/sFoundation20.dll"
     DESTINATION .
 )
+else()
+# installs source file into same directory
+install(FILES
+    "${SFND_LIB_DIR}/libsFoundation20.so"
+    DESTINATION .
+    RENAME "libsFoundation20.so"
+)
+# installs as a different name
+install(FILES
+    "${SFND_LIB_DIR}/libsFoundation20.so"
+    DESTINATION .
+    RENAME "libsFoundation20.so.1"
+)
+endif()
 
 # Generate stubs next to the extension in the build tree, then install them
 # with the compiled module so editors can resolve the API from the venv.
 set(TEKNIC_STUB_DIR "${CMAKE_CURRENT_BINARY_DIR}/python_stubs")
 
+if(WIN32)
 add_custom_command(TARGET TeknicMotors POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         "${SFND_LIB_DIR}/sFoundation20.dll"
@@ -121,8 +138,35 @@ add_custom_command(TARGET TeknicMotors POST_BUILD
     COMMENT "Generating TeknicMotors.pyi stub..."
     VERBATIM
 )
+else()
+# copy both libsfoundations into the target directory, 
+# linux does weird renaming to include .1, and teknic seems to
+# include that but not tell you how to build against it
+add_custom_command(TARGET TeknicMotors POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${SFND_LIB_DIR}/libsFoundation20.so"
+        "$<TARGET_FILE_DIR:TeknicMotors>/libsFoundation20.so"
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${SFND_LIB_DIR}/libsFoundation20.so"
+        "$<TARGET_FILE_DIR:TeknicMotors>/libsFoundation20.so.1"
+    COMMAND ${CMAKE_COMMAND} -E env
+        "PYTHONPATH=$<TARGET_FILE_DIR:TeknicMotors>"
+        "${Python_EXECUTABLE}" -m pybind11_stubgen TeknicMotors
+            --output-dir "${TEKNIC_STUB_DIR}"
+    COMMENT "Generating TeknicMotors.pyi stub..."
+    VERBATIM
+)
+endif()
 
 install(FILES
     "${TEKNIC_STUB_DIR}/TeknicMotors.pyi"
     DESTINATION .
 )
+
+if(WIN32)
+else() 
+set_target_properties(TeknicMotors PROPERTIES
+    BUILD_RPATH "${SFND_LIB_DIR}"
+    INSTALL_RPATH "$ORIGIN"
+)
+endif()
