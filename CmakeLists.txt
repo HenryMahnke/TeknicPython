@@ -36,9 +36,7 @@ endif()
 project(teknic_motors CXX)
 
 # ---------------------------------------------------------------------------
-# sFoundation include / library paths
-#   The SDK is expected at  <project-root>/sdk/
-#   Adjust the paths below if your SDK lives elsewhere.
+# sFoundation include / library paths for both windows and linux operating systems
 # ---------------------------------------------------------------------------
 if(WIN32)
 set(SFND_INC_DIR  "${CMAKE_SOURCE_DIR}/sdk/inc")
@@ -163,6 +161,8 @@ install(FILES
     DESTINATION .
 )
 
+# tells the python extension to look for dependent shared libraries 
+# in install directory
 if(WIN32)
 else() 
 set_target_properties(TeknicMotors PROPERTIES
